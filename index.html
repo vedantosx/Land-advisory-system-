@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Land Advisory - Comprehensive Land Analysis</title>
+    <!-- Leaflet CSS for maps -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ecf0f1;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: #3498db;
+        }
+        
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            padding-top: 80px;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            padding: 0 20px;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .search-box {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        
+        .search-box input {
+            padding: 0.8rem 1rem;
+            width: 70%;
+            max-width: 500px;
+            border: none;
+            border-radius: 4px 0 0 4px;
+            font-size: 1rem;
+        }
+        
+        .search-box button {
+            padding: 0.8rem 1.5rem;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+        
+        .search-box button:hover {
+            background-color: #2980b9;
+        }
+        
+        /* About Section */
+        .about-section {
+            padding: 5rem 2rem;
+            background-color: white;
+        }
+        
+        .about-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3rem;
+            align-items: center;
+        }
+        
+        .about-text {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .about-text h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: #2c3e50;
+        }
+        
+        .about-text p {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .about-text span {
+            font-weight: 600;
+            color: #3498db;
+        }
+        
+        .about-text h3 {
+            margin: 1.5rem 0 1rem;
+            color: #2c3e50;
+        }
+        
+        .about-text ul {
+            list-style: none;
+        }
+        
+        .about-text ul li {
+            margin-bottom: 0.8rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        
+        .about-text ul li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #3498db;
+            font-weight: bold;
+        }
+        
+        .about-image {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .about-image img {
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Features Section */
+        .features-container {
+            padding: 5rem 2rem;
+            background-color: #f8f9fa;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            max-width: 350px;
+            margin: 0 auto;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .feature-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .feature-card h3 {
+            padding: 1rem 1.5rem 0;
+            color: #2c3e50;
+        }
+        
+        .feature-card p {
+            padding: 0.5rem 1.5rem 1.5rem;
+            color: #666;
+        }
+        
+        .feature-card a {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            margin: 0 1.5rem 1.5rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .feature-card a:hover {
+            background-color: #2980b9;
+        }
+        
+        /* Analysis Results Section */
+        #analysis-results {
+            padding: 5rem 2rem;
+            background-color: white;
+            display: none;
+        }
+        
+        .results-header {
+            max-width: 1200px;
+            margin: 0 auto 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .results-header h2 {
+            font-size: 1.8rem;
+            color: #2c3e50;
+        }
+        
+        .report-btn {
+            padding: 0.7rem 1.5rem;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+        
+        .report-btn:hover {
+            background-color: #219653;
+        }
+        
+        .results-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 2rem;
+        }
+        
+        /* Map Container */
+        .map-container {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .map-container h3 {
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+        
+        #land-map {
+            height: 400px;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        
+        .map-legend {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+        
+        .map-legend h4 {
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+            color: #2c3e50;
+        }
+        
+        .map-legend ul {
+            list-style: none;
+        }
+        
+        .map-legend li {
+            margin-bottom: 0.3rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .legend-color {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: 0.5rem;
+            border-radius: 4px;
+        }
+        
+        .legend-color.flood {
+            background-color: #3498db;
+        }
+        
+        .legend-color.utility {
+            background-color: #e74c3c;
+        }
+        
+        .legend-color.soil {
+            background-color: #f39c12;
+        }
+        
+        /* Data Tabs */
+        .data-tabs {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .tab-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .tab-btn {
+            padding: 0.75rem 1.5rem;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 4px 4px 0 0;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .tab-btn.active {
+            background: #3498db;
+            color: white;
+        }
+        
+        .tab-pane {
+            display: none;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tab-pane.active {
+            display: block;
+        }
+        
+        /* Soil Analysis Tab */
+        .soil-chart-container {
+            width: 100%;
+            height: 300px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .soil-details h4 {
+            margin: 1rem 0 0.5rem;
+            color: #2c3e50;
+        }
+        
+        .rating-bar {
+            height: 24px;
+            background: #e0e0e0;
+            border-radius: 12px;
+            margin: 0.5rem 0 1.5rem;
+            position: relative;
+        }
+        
+        .rating-fill {
+            height: 100%;
+            border-radius: 12px;
+            background: linear-gradient(90deg, #ff9a9e 0%, #fad0c4 100%);
+            width: 70%;
+        }
+        
+        .rating-value {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        /* Utilities Tab */
+        .utility-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+        
+        .utility-item {
+            padding: 1.5rem;
+            border-radius: 8px;
+            background: #f8f9fa;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .utility-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .utility-item img {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 1rem;
+        }
+        
+        .utility-item h4 {
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+        
+        /* Climate Tab */
+        .climate-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .climate-chart {
+            width: 100%;
+            height: 250px;
+        }
+        
+        .climate-details {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+        
+        .climate-stat {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .climate-stat h4 {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-bottom: 0.5rem;
+        }
+        
+        .climate-stat p {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        /* Flood Risk Tab */
+        .flood-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        
+        #flood-risk-map {
+            height: 300px;
+            border-radius: 8px;
+        }
+        
+        .risk-level {
+            padding: 0.5rem 1rem;
+            background: #f39c12;
+            color: white;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+        
+        .risk-level .risk-label {
+            font-weight: bold;
+        }
+        
+        #flood-events {
+            list-style-position: inside;
+            margin-top: 0.5rem;
+        }
+        
+        /* Legal Status Tab */
+        .legal-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        
+        .legal-status h4 {
+            margin: 1rem 0 0.5rem;
+            color: #2c3e50;
+        }
+        
+        #ownership-status, #encumbrances, #zoning {
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+        
+        #document-list {
+            list-style-position: inside;
+            margin: 1rem 0;
+        }
+        
+        .request-btn {
+            padding: 0.7rem 1.5rem;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+        
+        .request-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        /* Contact Section */
+        .contact-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 5rem 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3rem;
+            align-items: center;
+        }
+        
+        .contact-form {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .contact-form h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: #2c3e50;
+        }
+        
+        .contact-form form {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .contact-form label {
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        
+        .contact-form input,
+        .contact-form textarea {
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .contact-form textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+        
+        .contact-form button {
+            padding: 0.8rem 1.5rem;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+        
+        .contact-form button:hover {
+            background-color: #2980b9;
+        }
+        
+        .contact-image {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .contact-image img {
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Back to Top Button */
+        #backToTop {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s;
+        }
+        
+        #backToTop:hover {
+            background-color: #2980b9;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            padding: 3rem 2rem 1rem;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-section h4 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: #ecf0f1;
+        }
+        
+        .footer-section ul {
+            list-style: none;
+        }
+        
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-section ul li a {
+            color: #bdc3c7;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-section ul li a:hover {
+            color: #3498db;
+        }
+        
+        .footer-section p {
+            color: #bdc3c7;
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid #34495e;
+            color: #bdc3c7;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+            
+            .search-box input {
+                width: 60%;
+            }
+            
+            .results-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .utility-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .climate-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .flood-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .legal-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            header {
+                flex-direction: column;
+                padding: 1rem;
+            }
+            
+            .logo {
+                margin-bottom: 1rem;
+            }
+            
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            nav ul li {
+                margin: 0 0.5rem 0.5rem;
+            }
+            
+            .search-box input {
+                width: 100%;
+            }
+            
+            .search-box button {
+                padding: 0.8rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <header>
+        <div class="logo">Smart Land Advisory</div>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#analysis">Analysis</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Comprehensive Land Analysis Platform</h1>
+            <p>Get detailed information about soil quality, underground utilities, climate patterns, flood risks, and legal status for any property.</p>
+            <div class="search-box">
+                <input type="text" 
+                       placeholder="Enter location (e.g., Mumbai, Bangalore)" 
+                       id="location"
+                       list="location-suggestions">
+                <datalist id="location-suggestions">
+                    <option value="Mumbai, Maharashtra">
+                    <option value="Delhi">
+                    <option value="Bangalore, Karnataka">
+                    <option value="Hyderabad, Telangana">
+                    <option value="Chennai, Tamil Nadu">
+                    <option value="Kolkata, West Bengal">
+                </datalist>
+                <button onclick="searchLand()">Analyze Land</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about-section">
+        <div class="about-container">
+            <div class="about-text">
+                <h2>About Smart Land Analysis</h2>
+                <p>
+                    Our web application provides <span>critical insights</span> into land properties, ensuring individuals and organizations make <span>informed decisions</span> regarding land use.
+                </p>
+                <h3>Our Data Sources:</h3>
+                <ul>
+                    <li>🌍 <span>Survey of India</span> - For precise geographical data</li>
+                    <li>🌊 <span>NDMA Flood Hazard Atlas</span> - Flood risk assessment</li>
+                    <li>🏛️ <span>State Land Records Departments</span> - Legal status verification</li>
+                    <li>🌱 <span>National Bureau of Soil Survey</span> - Soil quality data</li>
+                </ul>
+            </div>
+            <div class="about-image">
+                <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80" alt="Land Analysis Overview">
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features-container">
+        <div class="feature-card">
+            <img src="https://images.unsplash.com/photo-1605000797499-95a51c5269ae?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Soil Analysis">
+            <h3>Soil Analysis</h3>
+            <p>Analyze the soil quality before making any land investment.</p>
+            <a href="#home">Try Now</a>
+        </div>
+        
+        <div class="feature-card">
+            <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Legal Status">
+            <h3>Legal Status</h3>
+            <p>Ensure the land is free from legal disputes and encumbrances.</p>
+            <a href="#home">Check Now</a>
+        </div>
+        
+        <div class="feature-card">
+            <img src="https://images.unsplash.com/photo-1476231682828-37e571bc172f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Flood Risk">
+            <h3>Flood Risk</h3>
+            <p>Assess the flood risk in the area before making a decision.</p>
+            <a href="#home">Assess Now</a>
+        </div>
+    </section>
+
+    <!-- Analysis Results Section (Initially Hidden) -->
+     <!-- Loading Indicator -->
+<div id="loading" style="display: none;">
+    <div class="spinner"></div>
+    <p>Loading land data...</p>
+  </div>
+  
+  <!-- Results Section -->
+  <div id="results" style="display: none;">
+    <h2>Analysis Results</h2>
+    
+    <div class="data-card">
+      <h3>Soil Composition</h3>
+      <p id="soil-composition"></p>
+      <canvas id="soilChart" width="300" height="300"></canvas>
+    </div>
+    
+    <div class="data-card">
+      <h3>Climate</h3>
+      <p>Temperature: <span id="temperature"></span></p>
+      <p>Humidity: <span id="humidity"></span></p>
+    </div>
+    
+    <div class="data-card">
+      <h3>Flood Risk</h3>
+      <p>Risk Level: <span id="flood-risk"></span></p>
+      <ul id="flood-history"></ul>
+    </div>
+  </div>
+    <section id="analysis-results" class="hidden">
+        <div class="results-header">
+            <h2>Land Analysis for <span id="location-title">Location Name</span></h2>
+            <button id="generate-report" class="report-btn">Generate PDF Report</button>
+        </div>
+        
+        <div class="results-container">
+            <!-- Map Visualization -->
+            <div class="map-container">
+                <h3>Property Location</h3>
+                <div id="land-map"></div>
+                <div class="map-legend">
+                    <h4>Map Legend</h4>
+                    <ul>
+                        <li><span class="legend-color flood"></span> Flood Zones</li>
+                        <li><span class="legend-color utility"></span> Utility Lines</li>
+                        <li><span class="legend-color soil"></span> Soil Quality</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Data Tabs -->
+            <div class="data-tabs">
+                <div class="tab-buttons">
+                    <button class="tab-btn active" data-tab="soil">Soil Analysis</button>
+                    <button class="tab-btn" data-tab="utilities">Utilities</button>
+                    <button class="tab-btn" data-tab="climate">Climate</button>
+                    <button class="tab-btn" data-tab="flood">Flood Risk</button>
+                    <button class="tab-btn" data-tab="legal">Legal Status</button>
+                </div>
+                
+                <div class="tab-content">
+                    <!-- Soil Analysis Tab -->
+                    <div id="soil" class="tab-pane active">
+                        <div class="soil-chart-container">
+                            <canvas id="soilChart"></canvas>
+                        </div>
+                        <div class="soil-details">
+                            <h4>Soil Composition</h4>
+                            <p id="soil-description">This soil is loamy with good drainage properties, making it suitable for both construction and agriculture. It has a balanced mix of sand, silt, and clay with moderate organic content.</p>
+                            <h4>Suitability for Construction</h4>
+                            <div class="rating-bar">
+                                <div id="construction-rating" class="rating-fill" style="width: 70%;"></div>
+                                <span id="construction-value" class="rating-value">70%</span>
+                            </div>
+                            <h4>Suitability for Agriculture</h4>
+                            <div class="rating-bar">
+                                <div id="agriculture-rating" class="rating-fill" style="width: 85%;"></div>
+                                <span id="agriculture-value" class="rating-value">85%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Utilities Tab -->
+                    <div id="utilities" class="tab-pane">
+                        <h3>Underground Utilities Information</h3>
+                        <div class="utility-grid">
+                            <div class="utility-item">
+                                <img src="https://cdn-icons-png.flaticon.com/512/251/251060.png" alt="Water">
+                                <h4>Water Lines</h4>
+                                <p id="water-info">Distance: 50m from property</p>
+                            </div>
+                            <div class="utility-item">
+                                <img src="https://cdn-icons-png.flaticon.com/512/887/887850.png" alt="Electric">
+                                <h4>Electric Lines</h4>
+                                <p id="electric-info">Distance: 30m from property</p>
+                            </div>
+                            <div class="utility-item">
+                                <img src="https://cdn-icons-png.flaticon.com/512/2936/2936886.png" alt="Gas">
+                                <h4>Gas Lines</h4>
+                                <p id="gas-info">No gas lines in immediate area</p>
+                            </div>
+                            <div class="utility-item">
+                                <img src="https://cdn-icons-png.flaticon.com/512/3023/3023955.png" alt="Sewer">
+                                <h4>Sewer Lines</h4>
+                                <p id="sewer-info">Nearest connection: 75m</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Climate Tab -->
+                    <div id="climate" class="tab-pane">
+                        <h3>Climate Data</h3>
+                        <div class="climate-container">
+                            <div class="climate-chart">
+                                <canvas id="temperatureChart"></canvas>
+                            </div>
+                            <div class="climate-chart">
+                                <canvas id="precipitationChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="climate-details">
+                            <div class="climate-stat">
+                                <h4>Average Temperature</h4>
+                                <p id="avg-temp">26°C</p>
+                            </div>
+                            <div class="climate-stat">
+                                <h4>Annual Rainfall</h4>
+                                <p id="annual-rain">1200mm</p>
+                            </div>
+                            <div class="climate-stat">
+                                <h4>Humidity Levels</h4>
+                                <p id="humidity">65% average</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Flood Risk Tab -->
+                    <div id="flood" class="tab-pane">
+                        <h3>Flood Risk Assessment</h3>
+                        <div class="flood-container">
+                            <div class="flood-map">
+                                <div id="flood-risk-map"></div>
+                            </div>
+                            <div class="flood-details">
+                                <h4>Flood Risk Level</h4>
+                                <div class="risk-level" id="flood-risk-level">
+                                    <span class="risk-label">Moderate</span>
+                                </div>
+                                <p id="flood-description">This area has a moderate risk of flooding during monsoon season. Historical data shows occasional flooding with water levels reaching up to 1.2 meters in extreme events.</p>
+                                <h4>Historical Flood Events</h4>
+                                <ul id="flood-events">
+                                    <li>2019 - Minor flooding (0.5m)</li>
+                                    <li>2015 - Moderate flooding (1.2m)</li>
+                                    <li>2009 - Minor flooding (0.3m)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Legal Status Tab -->
+                    <div id="legal" class="tab-pane">
+                        <h3>Legal Status & Land Records</h3>
+                        <div class="legal-container">
+                            <div class="legal-status">
+                                <h4>Ownership Status</h4>
+                                <p id="ownership-status">Clear Title</p>
+                                <h4>Encumbrances</h4>
+                                <p id="encumbrances">No liens or encumbrances</p>
+                                <h4>Zoning Classification</h4>
+                                <p id="zoning">Residential (R2)</p>
+                                <h4>Property Tax Status</h4>
+                                <p id="tax-status">Up to date</p>
+                            </div>
+                            <div class="legal-documents">
+                                <h4>Available Documents</h4>
+                                <ul id="document-list">
+                                    <li>Title Deed (Available)</li>
+                                    <li>Survey Map (Available)</li>
+                                    <li>Tax Records (Available)</li>
+                                    <li>Zoning Certificate (Available)</li>
+                                    <li>Encumbrance Certificate (Available)</li>
+                                </ul>
+                                <button class="request-btn">Request Documents</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact">
+        <div class="contact-container">
+            <div class="contact-form">
+                <h2>Contact Us</h2>
+                <form action="https://submit-form.com/q0a44HoKc">
+                    <label for="first-name">First Name</label>
+                    <input id="first-name" name="first-name" type="text" required>
+                    
+                    <label for="last-name">Last Name</label>
+                    <input id="last-name" name="last-name" type="text" required>
+
+                    <label for="email">Email</label>
+                    <input id="email" name="email" type="email" required>
+
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" rows="5" required></textarea>
+
+                    <button type="submit">Send Message</button>
+                </form>
+            </div>
+
+            <div class="contact-image">
+                <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Contact Illustration">
+            </div>
+        </div>
+    </section>
+
+    <button id="backToTop" onclick="scrollToTop()">↑</button>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Data Sources</h4>
+                <ul>
+                    <li>National Remote Sensing Centre</li>
+                    <li>Central Ground Water Board</li>
+                    <li>State Land Records Departments</li>
+                    <li>India Meteorological Department</li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Contact Info</h4>
+                <p>info@smartlandadvisory.com</p>
+                <p>+91 9876543210</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Smart Land Advisory. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        // Wait for the DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize the back to top button
+            const backToTopButton = document.getElementById('backToTop');
+            
+            // Show/hide the button based on scroll position
+            window.addEventListener('scroll', function() {
+                if (window.pageYOffset > 300) {
+                    backToTopButton.style.display = 'flex';
+                } else {
+                    backToTopButton.style.display = 'none';
+                }
+            });
+            
+                   // Tab functionality
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        tabButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons and panes
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+                
+                // Add active class to clicked button and corresponding pane
+                this.classList.add('active');
+                const tabId = this.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+        
+        // Search land function
+        window.searchLand = function() {
+            const locationInput = document.getElementById('location').value.trim();
+            if (locationInput === '') {
+                alert('Please enter a location');
+                return;
+            }
+            
+            // Show loading state
+            document.getElementById('location-title').textContent = locationInput;
+            document.getElementById('analysis-results').style.display = 'block';
+            
+            // Scroll to results
+            document.getElementById('analysis-results').scrollIntoView({ behavior: 'smooth' });
+            
+            // Simulate data loading (in a real app, this would be API calls)
+            setTimeout(() => {
+                initializeMapAndCharts(locationInput);
+            }, 500);
+        };
+        
+        // Initialize map and charts with sample data
+        function initializeMapAndCharts(location) {
+            // Sample coordinates for different locations
+            const locationCoordinates = {
+                'Mumbai, Maharashtra': [19.0760, 72.8777],
+                'Delhi': [28.7041, 77.1025],
+                'Bangalore, Karnataka': [12.9716, 77.5946],
+                'Hyderabad, Telangana': [17.3850, 78.4867],
+                'Chennai, Tamil Nadu': [13.0827, 80.2707],
+                'Kolkata, West Bengal': [22.5726, 88.3639]
+            };
+            
+            // Default to Mumbai if location not in list
+            const coords = locationCoordinates[location] || [19.0760, 72.8777];
+            
+            // Initialize map
+            const map = L.map('land-map').setView(coords, 15);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+            
+            // Add property boundary
+            L.polygon([
+                [coords[0] + 0.001, coords[1] - 0.001],
+                [coords[0] + 0.001, coords[1] + 0.001],
+                [coords[0] - 0.001, coords[1] + 0.001],
+                [coords[0] - 0.001, coords[1] - 0.001]
+            ], {color: 'blue', fillOpacity: 0.1}).addTo(map);
+            
+            // Add marker for the property
+            L.marker(coords).addTo(map)
+                .bindPopup(`<b>${location}</b><br>Property Location`)
+                .openPopup();
+            
+            // Initialize flood risk map
+            const floodMap = L.map('flood-risk-map').setView(coords, 14);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(floodMap);
+            
+            // Add flood risk heatmap (sample data)
+            const floodPoints = Array(50).fill().map(() => [
+                coords[0] + (Math.random() * 0.02 - 0.01),
+                coords[1] + (Math.random() * 0.02 - 0.01),
+                Math.random()
+            ]);
+            
+            L.heatLayer(floodPoints, {
+                radius: 25,
+                blur: 15,
+                maxZoom: 17,
+                gradient: {0.4: 'blue', 0.6: 'lime', 0.7: 'yellow', 1: 'red'}
+            }).addTo(floodMap);
+            
+            // Create soil composition chart
+            createSoilChart([40, 30, 20, 10]);
+            
+            // Create climate charts
+            createClimateCharts(
+                [22, 24, 27, 30, 32, 31, 29, 28, 28, 27, 25, 23], // Temperature data
+                [2, 1, 3, 10, 50, 300, 400, 350, 200, 80, 15, 5]    // Precipitation data
+            );
+            
+            // Update flood risk level based on location
+            updateFloodRiskLevel(location);
+        }
+        
+        // Create soil composition chart
+        function createSoilChart(soilData) {
+            const ctx = document.getElementById('soilChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Sand', 'Silt', 'Clay', 'Organic Matter'],
+                    datasets: [{
+                        data: soilData,
+                        backgroundColor: [
+                            '#f6d186',
+                            '#a8d3da',
+                            '#b5a189',
+                            '#8bb58b'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.label}: ${context.raw}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Create climate charts
+        function createClimateCharts(tempData, precipData) {
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            
+            // Temperature chart
+            const tempCtx = document.getElementById('temperatureChart').getContext('2d');
+            new Chart(tempCtx, {
+                type: 'line',
+                data: {
+                    labels: months,
+                    datasets: [{
+                        label: 'Average Temperature (°C)',
+                        data: tempData,
+                        borderColor: 'rgb(255, 99, 132)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.1)',
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.raw}°C`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Temperature (°C)'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Precipitation chart
+            const precipCtx = document.getElementById('precipitationChart').getContext('2d');
+            new Chart(precipCtx, {
+                type: 'bar',
+                data: {
+                    labels: months,
+                    datasets: [{
+                        label: 'Precipitation (mm)',
+                        data: precipData,
+                        backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.dataset.label}: ${context.raw}mm`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Precipitation (mm)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Update flood risk level based on location
+        function updateFloodRiskLevel(location) {
+            const floodRiskLevels = {
+                'Mumbai, Maharashtra': 'High',
+                'Delhi': 'Low',
+                'Bangalore, Karnataka': 'Moderate',
+                'Hyderabad, Telangana': 'Low',
+                'Chennai, Tamil Nadu': 'High',
+                'Kolkata, West Bengal': 'Moderate'
+            };
+            
+            const riskLevel = floodRiskLevels[location] || 'Moderate';
+            const riskElement = document.getElementById('flood-risk-level');
+            
+            // Clear previous classes
+            riskElement.className = 'risk-level';
+            
+            // Add appropriate class based on risk level
+            if (riskLevel === 'High') {
+                riskElement.classList.add('high-risk');
+                riskElement.style.backgroundColor = '#e74c3c';
+            } else if (riskLevel === 'Moderate') {
+                riskElement.classList.add('moderate-risk');
+                riskElement.style.backgroundColor = '#f39c12';
+            } else {
+                riskElement.classList.add('low-risk');
+                riskElement.style.backgroundColor = '#2ecc71';
+            }
+            
+            riskElement.querySelector('.risk-label').textContent = riskLevel;
+        }
+        
+        // Generate PDF report
+        document.getElementById('generate-report').addEventListener('click', function() {
+            // Create a new PDF document
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Add title
+            doc.setFontSize(20);
+            doc.setTextColor(40, 40, 40);
+            doc.text('Smart Land Advisory Report', 105, 20, { align: 'center' });
+            
+            // Add location and date
+            doc.setFontSize(14);
+            doc.text(`Location: ${document.getElementById('location-title').textContent}`, 105, 30, { align: 'center' });
+            
+            const today = new Date();
+            doc.text(`Report Date: ${today.toLocaleDateString()}`, 105, 40, { align: 'center' });
+            
+            // Add line separator
+            doc.setDrawColor(200, 200, 200);
+            doc.line(20, 50, 190, 50);
+            
+            // Add soil analysis section
+            doc.setFontSize(16);
+            doc.setTextColor(44, 62, 80);
+            doc.text('Soil Analysis', 20, 60);
+            
+            doc.setFontSize(12);
+            doc.setTextColor(80, 80, 80);
+            doc.text(document.getElementById('soil-description').textContent, 20, 70, { maxWidth: 170 });
+            
+            // Add soil composition chart (simplified)
+            doc.setFillColor(246, 209, 134);
+            doc.rect(20, 80, 40, 10, 'F'); // Sand
+            doc.text('Sand: 40%', 65, 88);
+            
+            doc.setFillColor(168, 211, 218);
+            doc.rect(20, 95, 30, 10, 'F'); // Silt
+            doc.text('Silt: 30%', 65, 103);
+            
+            doc.setFillColor(181, 161, 137);
+            doc.rect(20, 110, 20, 10, 'F'); // Clay
+            doc.text('Clay: 20%', 65, 118);
+            
+            doc.setFillColor(139, 181, 139);
+            doc.rect(20, 125, 10, 10, 'F'); // Organic Matter
+            doc.text('Organic Matter: 10%', 65, 133);
+            
+            // Add flood risk section
+            doc.setFontSize(16);
+            doc.setTextColor(44, 62, 80);
+            doc.text('Flood Risk Assessment', 20, 150);
+            
+            doc.setFontSize(12);
+            doc.setTextColor(80, 80, 80);
+            doc.text(document.getElementById('flood-description').textContent, 20, 160, { maxWidth: 170 });
+            
+            // Add flood risk level
+            const riskLevel = document.querySelector('.risk-label').textContent;
+            if (riskLevel === 'High') {
+                doc.setFillColor(231, 76, 60);
+            } else if (riskLevel === 'Moderate') {
+                doc.setFillColor(243, 156, 18);
+            } else {
+                doc.setFillColor(46, 204, 113);
+            }
+            
+            doc.rect(20, 170, 30, 10, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.text(riskLevel, 35, 178, { align: 'center' });
+            
+            // Add historical flood events
+            doc.setTextColor(80, 80, 80);
+            doc.text('Historical Flood Events:', 20, 190);
+            const events = document.querySelectorAll('#flood-events li');
+            events.forEach((event, index) => {
+                doc.text(event.textContent, 25, 200 + (index * 7));
+            });
+            
+            // Save the PDF
+            doc.save(`Land_Report_${document.getElementById('location-title').textContent}.pdf`);
+        });
+        
+        // Scroll to top function
+        window.scrollToTop = function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        };
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    });
+</script>
+<link href="https://cesium.com/downloads/cesiumjs/releases/1.95/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+<script src="https://cesium.com/downloads/cesiumjs/releases/1.95/Build/Cesium/Cesium.js"></script>
+<div id="cesiumContainer" style="width: 100%; height: 400px;"></div>
+<script>
+  Cesium.Ion.defaultAccessToken = 'YOUR_TOKEN';
+  const viewer = new Cesium.Viewer('cesiumContainer', {
+    terrainProvider: Cesium.createWorldTerrain()
+  });
+  viewer.camera.flyTo({ destination: Cesium.Cartesian3.fromDegrees(77.5946, 12.9716, 5000) });
+</script>
+<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>AOS.init();</script>
+<!-- Usage -->
+<div data-aos="fade-up">Content</div>
